@@ -100,33 +100,35 @@
 	  //frame_ws.onopen = function () {
        //       console.log("Websocket is open");
     
-	  
+	  namespace = '/test';
+            // Connect to the Socket.IO server.
+            // The connection URL has the following format:
+            //     http[s]://<domain>:<port>[/<namespace>]
+	  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 	  timer = setInterval(
 		function snapshot() {
          // Draws current image from the video element into the canvas
 			ctx.drawImage(video, 0,0, canvas.width, canvas.height);
 			var frame = canvas.toDataURL("image/png");
 			console.log(frame.substring(0, 50));
-			namespace = '/test';
-            // Connect to the Socket.IO server.
-            // The connection URL has the following format:
-            //     http[s]://<domain>:<port>[/<namespace>]
-			var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
 			
-			// Event handler for new connections.
-            // The callback function is invoked when a connection with the
-            // server is established.
-			socket.on('frame', function(data) {
-				socket.emit('frame', frame);
-		});
+
 		
-		    socket.on('message', function(data) {
-                $('canvas').text(data)
-        });
+		  //  socket.on('message', function(data) {
+          //      $('canvas').text(data)
+        //});
 		
 			//frame_ws.send(frame);
       }, 1000);
 
+			// Event handler for new connections.
+            // The callback function is invoked when a connection with the
+            // server is established.
+		socket.on('frame', function(data) {
+			socket.emit('frame', frame);
+		});	  
+	  
 	  
   </script>
 </html>
